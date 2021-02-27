@@ -10,7 +10,7 @@
 .card {
     display: grid;
     grid-template-rows: auto auto auto auto;
-    width: min(500px, 80vw);
+    width: min(80vw);
     margin: 10px auto;
     border: 1px solid lightgray;
     border-radius: 6px;

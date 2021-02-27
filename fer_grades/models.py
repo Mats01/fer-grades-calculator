@@ -44,6 +44,8 @@ class StudentPredmet(models.Model):
 
 
 class KomponentaBodovi(models.Model):
-    komponenta = models.ForeignKey(Komponenta, on_delete=models.CASCADE)
     predmet = models.ForeignKey(StudentPredmet, on_delete=models.CASCADE)
+    komponenta = models.ForeignKey(Komponenta, 
+        on_delete=models.CASCADE,
+    )
     points_collected = models.FloatField(default=0)
