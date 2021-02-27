@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+{%for stavka in predmeti %}
+<div class="card">
+    <div class="card_title">{{stavka.predmet.predmet.name}}</div>
+    <div>ukupno: {{stavka.points}}</div>
+    <div class="card_component_wrapper">
+        {%for komponenta in stavka.forms %}
+        <div>
+            <p>{{komponenta.component.name}}</p>
+            <form method="post" action="/moj-predmeti/update/{{komponenta.id}}">
+                {% csrf_token %}
+                {{ komponenta.form.as_p }}
+                <button type="submit">update</button>
+            </form>
+            <div>moguce bodova: {{komponenta.component.komponenta.max_points}}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endfor %}
+
+{% endblock %}

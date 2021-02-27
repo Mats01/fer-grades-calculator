@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Kako dodati predmet?</h2>
+<p>Jednostavno kopirjate web adresu predmeta s ferweba (primjer https://www.fer.unizg.hr/predmet/ooup_a)
+    ako je predmet vec u sustavu mozete ga odmah dodati u svoje predmete.
+    Ukoliko je ovo prvi put da sustav vidi vas predmet, moci cete za njega upisati komponente i njhove bodove.
+    Dodatno, ako smatrate da vec postojeci predmet ima krivo unesene kompoenente, mozete predloziti izmjenu ovako.
+</p>
+
+{%for predmet in predmeti %}
+<div class="card">
+    <div class="card_title">{{predmet.name}}</div>
+    <a class="fer_url" href="{{predmet.fer_url}}" target="_blank">{{predmet.fer_url}}</a>
+    <div class="card_component_wrapper">
+        {%for komponenta in predmet.komponenta_set.all %}
+        <div>
+            <p>{{komponenta.name}}</p>
+            <p>{{komponenta.max_points}}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <a href="/add-predmet/{{predmet.id}}/">
+        <button class="button-primary add_predmet_btn">Dodaj mojim predmetima</button>
+    </a>
+</div>
+{% endfor %}
+
+{% endblock %}
