@@ -1,11 +1,30 @@
-from .forms import StudentKomponentaBodoviForm
+
+from .forms import CodeAuthForm, EmailAuthForm, StudentKomponentaBodoviForm
 from django import shortcuts
 from .models import KomponentaBodovi, Predmet, Student, StudentPredmet
+from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+import uuid
+
 
 from django.views.generic import TemplateView
+from django.core.exceptions import ObjectDoesNotExist
+
+
+def get_or_create_user(email):
+    try:
+
+        user = User.objects.get(email=email)
+
+    except ObjectDoesNotExist:
+        username = email.split("@")[0]
+        user = User.objects.create_user(email=email, username=username)
+        user.save()
+
+    return user
 
 
 class SignupView(TemplateView):
@@ -98,3 +117,85 @@ class UpdatePointsView(TemplateView):
         if form.is_valid():
             form.save()
             return redirect('moj-predmeti')
+
+
+class PreLoginView(TemplateView):
+    template_name = 'prelogin.html'
+
+    def get(self, request):
+
+        form = EmailAuthForm()
+        return render(request, self.template_name, {'form': form, })
+
+    def post(self, request):
+        form = EmailAuthForm(request.POST)
+        if form.is_valid():
+            
+            email = form.cleaned_data.get('email')
+
+            
+
+
+
+
+            code = uuid.uuid4().hex[:6].upper()
+
+            user = get_or_create_user(email)
+
+            try:
+                student = user.student
+            except ObjectDoesNotExist:
+                student = Student(user=user)
+                student.save()
+            student = user.student
+            student.login_code = code
+            student.save()
+
+            send_mail(
+                'Bok',
+                'Vas kod je %s' % code,
+                'fer-grades@farmoredifferent.com',
+                [email],
+                fail_silently=False,
+            )
+
+            # user = authenticate(username=username, password=raw_password)
+            # login(request, user)
+            return redirect('/login/code/?email=%s' % email)
+
+        else:
+            print("invalid form")
+            return redirect('login')
+
+class LoginView(TemplateView):
+    template_name = "prelogin.html"
+
+    def get(self, request):
+
+        form = CodeAuthForm(initial={'email': request.GET['email']})
+        return render(request, self.template_name, {'form': form, })
+
+    def post(self, request):
+        form = CodeAuthForm(request.POST)
+        if form.is_valid():
+            
+            email = form.cleaned_data.get('email')
+            code = form.cleaned_data.get('code')
+            
+            try:
+            
+                user = authenticate(email=email, code=code)
+                
+                login(request, user, backend='fer_grades.auth_backend.PasswordlessAuthBackend')
+                return redirect('home')
+
+
+
+
+
+            except ObjectDoesNotExist:
+                return redirect('login')
+                    
+            
+        else:
+            return redirect('login')
