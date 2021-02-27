@@ -7,6 +7,9 @@ class KomponentaInline(admin.TabularInline):
     model = Komponenta
 
 
+class UvjetiInline(admin.TabularInline):
+    model = Uvjeti
+
 class StudentPredmetInline(admin.TabularInline):
     model = StudentPredmet
 
@@ -15,6 +18,7 @@ class StudentPredmetInline(admin.TabularInline):
 class PredmetAdmin(admin.ModelAdmin):
     inlines = [
         KomponentaInline,
+        UvjetiInline,
     ]
 
 

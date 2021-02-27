@@ -8,18 +8,37 @@
 <div class="card">
     <div class="card_title">{{stavka.predmet.predmet.name}}</div>
     <div>ukupno: {{stavka.points}}</div>
+
     <div class="card_component_wrapper">
-        {%for komponenta in stavka.forms %}
+
+        {%for komponenta in stavka.komponente %}
         <div>
-            <p>{{komponenta.component.name}}</p>
-            <form method="post" action="/moj-predmeti/update/{{komponenta.id}}">
-                {% csrf_token %}
-                {{ komponenta.form.as_p }}
-                <button type="submit">update</button>
-            </form>
-            <div>moguce bodova: {{komponenta.component.komponenta.max_points}}</div>
+            <p>{{komponenta.name}}</p>
+
+
+            <div>bodova: {{komponenta.points}}</div>
         </div>
         {% endfor %}
+    </div>
+    <div class="card_component_wrapper">
+        {%for komponenta in stavka.predmet.komponentabodovi_set.all %}
+
+        <div>
+            <p>{{komponenta.komponenta.name}}</p>
+            <p>{{komponenta.points_collected}}</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+    <div class="card_component_wrapper">
+
+        <form method="post" action="/moj-predmeti/update/{{stavka.predmet.id}}">
+            {% csrf_token %}
+            {{ stavka.form.as_p }}
+            <button type="submit">Dodaj</button>
+        </form>
     </div>
 
 </div>

@@ -18,12 +18,18 @@ class Komponenta(models.Model):
     name = models.CharField(max_length=200)
     predmet = models.ForeignKey(Predmet, on_delete=models.CASCADE)
     max_points = models.FloatField(default=0)
+    prag = models.FloatField(default=0)
+     
 
     class Meta:
         verbose_name_plural = "Komponente"
 
     def __str__(self):
         return self.name
+
+class Uvjeti(models.Model):
+    predmet = models.ForeignKey(Predmet, on_delete=models.CASCADE)
+    uvjet_tekst = models.CharField(max_length=200)
 
 
 class Student(models.Model):
@@ -49,3 +55,4 @@ class KomponentaBodovi(models.Model):
         on_delete=models.CASCADE,
     )
     points_collected = models.FloatField(default=0)
+

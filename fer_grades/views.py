@@ -88,19 +88,29 @@ class MyPredmetiView(TemplateView):
         predmeti = StudentPredmet.objects.filter(student=request.user.student)
         predmeti_list = []
         for predmet in predmeti:
-            forms = []
-            points = 0
-            for komp in predmet.komponentabodovi_set.all():
-                points += komp.points_collected
-                forms.append({
-                    'form': StudentKomponentaBodoviForm(instance=komp),
-                    'component': komp,
-                    'id': komp.id,
+            components = []
+            ukupno = 0
+            for component in predmet.predmet.komponenta_set.all():
+                points = 0
+                for bodovi in component.komponentabodovi_set.all():
+                    points += bodovi.points_collected
+                components.append({
+                    "name": component.name,
+                    "points": points,
                 })
+                ukupno += points
+
+
+
+            points_from = StudentKomponentaBodoviForm(initial={'predmet': predmet})
+
+
+
             predmeti_list.append({
                 'predmet': predmet,
-                'forms': forms,
-                'points': points,
+                "form": points_from,
+                'komponente': components,
+                'points': ukupno,
             })
 
         return render(request, self.template_name, {'predmeti': predmeti_list})
@@ -110,13 +120,19 @@ class UpdatePointsView(TemplateView):
 
     def post(self, request, id):
 
-        komp = KomponentaBodovi.objects.get(pk=id)
 
-        form = StudentKomponentaBodoviForm(request.POST, instance=komp)
+        form = StudentKomponentaBodoviForm(request.POST)
+
+        
 
         if form.is_valid():
-            form.save()
+            
+            komp = form.save()
+
             return redirect('moj-predmeti')
+        else:
+            return redirect('moj-predmeti')
+            
 
 
 class PreLoginView(TemplateView):

@@ -1,6 +1,6 @@
 import re
 
-from .models import Komponenta, KomponentaBodovi
+from .models import Komponenta, KomponentaBodovi, Predmet
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -8,14 +8,22 @@ from django.core.exceptions import ValidationError
 class StudentKomponentaBodoviForm(forms.ModelForm):
     class Meta:
         model = KomponentaBodovi
-        fields = ['points_collected', 'komponenta', ]
+
+        fields = ['points_collected', 'komponenta','predmet', ]
+        widgets = {'predmet': forms.HiddenInput(), }
+
 
     def __init__(self, *args, **kwargs):
+        # instance_predmet = kwargs.pop('instance_predmet', None)
+
         super(StudentKomponentaBodoviForm, self).__init__(*args, **kwargs)
-        komp_instance = kwargs['instance']
-        self.fields['komponenta'].queryset = Komponenta.objects.filter(
-            predmet=komp_instance.predmet.predmet,
-        )
+
+        if kwargs:
+            predmet = kwargs['initial']['predmet'].predmet
+        
+            self.fields['komponenta'].queryset = Komponenta.objects.filter(
+                predmet=predmet,
+            )
 
 
 class EmailAuthForm(forms.Form):
