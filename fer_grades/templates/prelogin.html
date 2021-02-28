@@ -4,9 +4,7 @@
 <div class="login_wrapper">
 
 
-    {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-    {% endif %}
+
 
     {% if next %}
     {% if user.is_authenticated %}
@@ -17,16 +15,22 @@
     {% endif %}
     {% endif %}
 
-    <h2>Kako se ulogirati? </h2>
-    <p>Zaboravi na zaboravljene lozinke.</p>
+    
 
-    <p>Upisi svoj fer-mail ovidije, dobi privremeni kod na mail, upisi kod i spreman si!</p>
+    <h2>Kako se ulogirati? </h2>
+    <p>Zaboravi na singup.</p>
+
+    <p>Ako jos nemas racun svejedno upisi svoj fermail i ✨izmisli✨ lozinku -> odmah imas racun.</p>
 
     <form class="login_form" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Get Code</button>
+        <button type="submit">Get In</button>
     </form>
+    {% if login_error %}
+    <p>Pogresna lozinka</p>
+
+    {% endif %}
 
 
 </div>

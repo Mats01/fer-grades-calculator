@@ -74,3 +74,20 @@ class EditPredmetForm(forms.ModelForm):
     class Meta:
         model = Predmet
         fields = ['dovoljan', 'dobar', 'vrlo_dobar', 'odlican', ]
+
+
+class EmailAndPassAuthForm(forms.Form):
+    email = forms.EmailField(
+        label='Unesite svoju fer emial adresu',
+        max_length=100,
+        widget=forms.TextInput(attrs={'placeholder': 'ime.prezime@fer.hr'}))
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean_email(self):
+        data = self.cleaned_data['email']
+        # if "matej.butkovic@fer.hr" not in data:
+        #     raise ValidationError("Dana email adresa nije FER emial adresa")
+        if not re.match("^[a-z]+.[a-z]+[0-9]*@fer.hr$", data):
+            raise ValidationError("Dana email adresa nije FER emial adresa")
+
+        return data

@@ -2,7 +2,7 @@
 from django.contrib.auth import forms
 from django.forms import modelformset_factory
 from django.forms.models import inlineformset_factory
-from .forms import CodeAuthForm, EditPredmetForm, EmailAuthForm, PredmetForm, StudentKomponentaBodoviForm
+from .forms import CodeAuthForm, EditPredmetForm, EmailAndPassAuthForm, EmailAuthForm, PredmetForm, StudentKomponentaBodoviForm
 from django import shortcuts
 from .models import Komponenta, KomponentaBodovi, Predmet, Student, StudentPredmet, Uvjeti
 from django.contrib.auth.models import User
@@ -16,14 +16,15 @@ from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def get_or_create_user(email):
+def get_or_create_user(email, password):
     try:
 
         user = User.objects.get(email=email)
 
     except ObjectDoesNotExist:
         username = email.split("@")[0]
-        user = User.objects.create_user(email=email, username=username)
+        user = User.objects.create_user(
+            email=email, username=username, password=password)
         user.save()
 
     return user
@@ -55,7 +56,7 @@ class SignupView(TemplateView):
             return redirect('signup')
 
 
-class PreLoginView(TemplateView):
+class OLDPreLoginView(TemplateView):
     template_name = 'prelogin.html'
 
     def get(self, request):
@@ -85,7 +86,7 @@ class PreLoginView(TemplateView):
             send_mail(
                 'Bok',
                 'Vas kod je %s' % code,
-                'fer-grades@farmoredifferent.com',
+                'matej.butkovic@fer.hr',
                 [email],
                 fail_silently=False,
             )
@@ -97,6 +98,46 @@ class PreLoginView(TemplateView):
         else:
             print("invalid form")
             return redirect('login')
+
+
+class PreLoginView(TemplateView):
+    template_name = 'prelogin.html'
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('moj-predmeti')
+
+        form = EmailAndPassAuthForm()
+        return render(request, self.template_name, {'form': form, })
+
+    def post(self, request):
+        form = EmailAndPassAuthForm(request.POST)
+        if form.is_valid():
+
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+
+            user = get_or_create_user(email, password)
+
+            try:
+                student = user.student
+            except ObjectDoesNotExist:
+                student = Student(user=user)
+                student.save()
+
+            user = authenticate(username=user.username, password=password)
+            try:
+                login(request, user,
+                      backend='django.contrib.auth.backends.ModelBackend')
+            except AttributeError:
+                return render(request, self.template_name, {'form': form, 'login_error': 'Kriva lozinka'})
+
+            # user = authenticate(username=username, password=raw_password)
+            # login(request, user)
+            return redirect('moj-predmeti')
+
+        else:
+            return render(request, self.template_name, {'form': form, })
 
 
 class LoginView(TemplateView):

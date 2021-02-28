@@ -24,13 +24,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', PreLoginView.as_view(), name='login'),
     path('logout/', logout_view, name='logout'),
-    path('login/code/', LoginView.as_view()),
+    # path('login/code/', LoginView.as_view()),
     path(
         'change-password/',
         auth_views.PasswordChangeView.as_view(
             template_name='change-password.html'),
         name='password_reset'),
-    path('signup/', SignupView.as_view(), name='signup'),
 
     path('add-predmet/<id>/', login_required(AddToMyPredmetiView.as_view())),
     path('', login_required(MyPredmetiView.as_view()),
