@@ -13,9 +13,10 @@
             <th>Predmet</th>
             <th>Bodovi</th>
             <th>Ocjena</th>
+            </th>
         </tr>
         {%for predmet in predmeti %}
-        <tr>
+        <tr class="points_row">
             <td>{{predmet.predmet}}</td>
             <td>{{predmet.points}}</td>
             <td>{{predmet.grade}}</td>
@@ -59,11 +60,21 @@
             </div>
         </div> {% endfor %} </div>
     <div class="card_component_wrapper">
-        uvjeti:<br />
-        {%for uvjet in stavka.predmet.predmet.uvjeti_set.all %}
+        <div class="predmet_two_clumns">
+            <div>
+                uvjeti:<br />
+                {%for uvjet in stavka.predmet.predmet.uvjeti_set.all %}
 
-        <div><b>{{uvjet.uvjet_tekst}}</b></div>
-        {% endfor %}
+                <div><b>{{uvjet.uvjet_tekst}}</b></div>
+                {% endfor %}
+            </div>
+            <div class="predmet_ocjene">
+                <pre>Dovoljan(2):   <strong>{{stavka.predmet.predmet.dovoljan}}</strong></pre>
+                <pre>Dobar(3):      <strong>{{stavka.predmet.predmet.dobar}}</strong></pre>
+                <pre>Vrlo Dobar(4): <strong>{{stavka.predmet.predmet.vrlo_dobar}}</strong></pre>
+                <pre>Odlican(5):    <strong>{{stavka.predmet.predmet.odlican}}</strong></pre>
+            </div>
+        </div>
     </div>
     <div class="card_component_wrapper">
         <table class="points_table">
@@ -86,7 +97,9 @@
                 <td>{{komponenta.description|default:""}}</td>
                 <td>{{komponenta.komponenta.name}}</td>
                 <td>{{komponenta.points_collected}}</td>
-                <td></td>
+                <td> <a href="/moj-predmeti/delete/{{komponenta.pk}}"> <button id="delete_row_btn"
+                            class="button-danger delete_row_btn">x</button></a></td>
+
 
             </tr>
             {% endfor %}
@@ -118,9 +131,17 @@
 
         $("#intable_form_{{stavka.predmet.id}}").css('display', 'inline-block')
     });
+
+    $(".points_row").hover(() => {
+        $("#delete_row_btn").css('display', 'block')
+    })
 </script>
 {% endfor %}
 
+
+<div class="centered_alone_btn">
+    <a href="/dodaj-predmet/"> <button>Dodaj predmet mojim predmetima</button></a>
+</div>
 
 
 

@@ -6,6 +6,10 @@ class Predmet(models.Model):
 
     name = models.CharField(max_length=100)
     fer_url = models.CharField(max_length=60, unique=True)
+    dovoljan = models.IntegerField(default=50)
+    dobar = models.IntegerField(default=65)
+    vrlo_dobar = models.IntegerField(default=75)
+    odlican = models.IntegerField(default=90)
 
     class Meta:
         verbose_name_plural = "Predmeti"

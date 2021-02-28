@@ -3,11 +3,8 @@
 {% block content %}
 
 <h2>Kako dodati predmet?</h2>
-<p>Jednostavno kopirjate web adresu predmeta s ferweba (primjer https://www.fer.unizg.hr/predmet/ooup_a)
-    ako je predmet vec u sustavu mozete ga odmah dodati u svoje predmete.
-    Ukoliko je ovo prvi put da sustav vidi vas predmet, moci cete za njega upisati komponente i njhove bodove.
-    Dodatno, ako smatrate da vec postojeci predmet ima krivo unesene kompoenente, mozete predloziti izmjenu ovako.
-</p>
+<p>Provjeri listu vec dodanih predmeta ispod, mozda te tvoj predemt vec ceka.</p>
+<p>Ako ipak nije tako ...</p>
 
 {%for predmet in predmeti %}
 <div class="card">
@@ -20,6 +17,24 @@
             <p>{{komponenta.max_points}}</p>
         </div>
         {% endfor %}
+    </div>
+
+    <div class="card_component_wrapper">
+        <div class="predmet_two_clumns">
+            <div>
+                uvjeti:<br />
+                {%for uvjet in predmet.uvjeti_set.all %}
+
+                <div><b>{{uvjet.uvjet_tekst}}</b></div>
+                {% endfor %}
+            </div>
+            <div class="predmet_ocjene">
+                <pre>Dovoljan(2):   <strong>{{predmet.dovoljan}}</strong></pre>
+                <pre>Dobar(3):      <strong>{{predmet.dobar}}</strong></pre>
+                <pre>Vrlo Dobar(4): <strong>{{predmet.vrlo_dobar}}</strong></pre>
+                <pre>Odlican(5):    <strong>{{predmet.odlican}}</strong></pre>
+            </div>
+        </div>
     </div>
 
 

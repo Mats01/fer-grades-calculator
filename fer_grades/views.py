@@ -171,17 +171,28 @@ class MyPredmetiView(TemplateView):
                     "max_points": component.max_points,
                     "prag": component.max_points * component.prag,
                 })
-                ukupno += points
+                if points >= component.prag * component.max_points:
+                    ukupno += points
 
             points_from = StudentKomponentaBodoviForm(
                 initial={'predmet': predmet})
+
+            grade = 1
+            if ukupno > predmet.predmet.dovoljan:
+                grade += 1
+            if ukupno > predmet.predmet.dobar:
+                grade += 1
+            if ukupno > predmet.predmet.vrlo_dobar:
+                grade += 1
+            if ukupno > predmet.predmet.odlican:
+                grade += 1
 
             predmeti_list.append({
                 'predmet': predmet,
                 "form": points_from,
                 'komponente': components,
                 'points': ukupno,
-                'grade': "labosi uvijet - NE",
+                'grade': grade,
             })
 
         return render(request, self.template_name, {'predmeti': predmeti_list})
@@ -200,3 +211,11 @@ class UpdatePointsView(TemplateView):
             return redirect('moj-predmeti')
         else:
             return redirect('moj-predmeti')
+
+
+class DeletePointsView(TemplateView):
+
+    def get(self, request, id):
+
+        KomponentaBodovi.objects.get(pk=id).delete()
+        return redirect('moj-predmeti')
