@@ -1,3 +1,13 @@
+h3 {
+
+    font-size: 1.2em;
+}
+
+.right {
+    text-align: right;
+}
+
+
 .login_wrapper {
     text-align: center;
     display: flex;
@@ -7,13 +17,27 @@
     margin-top: 10vh;
 }
 
+.login_form {
+    width: min(80vw, 800px);
+}
+
+.login_form input {
+    width: 90%;
+}
+
 .card {
     display: grid;
     grid-template-rows: auto auto auto auto;
-    width: min(80vw);
-    margin: 10px auto;
+    width: min(80vw, 800px);
+    margin: 20px auto;
     border: 1px solid lightgray;
     border-radius: 6px;
+    padding-top: 10px;
+
+}
+
+.card>div {
+    padding: 0 10px;
 }
 
 .fer_url {
@@ -24,25 +48,140 @@
     margin: 0;
 }
 
-.card_component_wrapper {
+.card_component_gird {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-.card_component_wrapper div {
+.card_component_grid div {
 
     flex: 0 1 90px;
     margin: 5px;
     text-align: center;
 }
 
+
+
+.card_component_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+}
+
+
 .card_title {
     margin: 10px;
     font-weight: bold;
+    display: flex;
+    align-content: space-between;
+    border-bottom: 1px solid #aaa;
 }
+
+.card_title>div {
+    flex-grow: 1;
+}
+
 
 .add_predmet_btn {
     border-radius: 0 0 4px 4px;
     width: 100%;
+}
+
+.overview_wrapper {
+    width: 100%;
+    margin: 12px auto 50px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.overview_table {
+    width: min(80vw, 800px);
+    margin: 12px auto 50px auto;
+
+
+}
+
+.points_table {
+    margin-bottom: 0;
+}
+
+.points_table td {
+    padding: 0 5px;
+}
+
+.points_table th pre {
+    margin-bottom: 4px;
+}
+
+
+.moar_points_btn {
+    height: 2.5rem;
+    padding: 0;
+    line-height: 1;
+    border-radius: 0;
+}
+
+.intable_form {
+    display: none;
+}
+
+.intable_form form {
+    margin-bottom: 4px;
+    display: flex;
+    width: 100%;
+    align-content: space-evenly;
+}
+
+
+
+.intable_input {
+    height: 2.5rem !important;
+    height: 2.5rem !important;
+    flex-grow: 1;
+    margin: 8px 10px 4px 10px;
+}
+
+select.intable_input {
+    padding: 0;
+}
+
+button.intable_input {
+    max-width: 100px;
+}
+
+.progress_bar {
+    width: 80%;
+    height: 12px;
+    border-radius: 18px;
+    border: 1px solid #aaa;
+}
+
+.progress_bar>div {
+    height: 12px;
+    border-radius: 18px;
+    background-color: black;
+
+}
+
+.prag {
+    width: 2px;
+    background-color: red !important;
+    z-index: 3;
+    border: unset;
+    margin-top: -12px;
+}
+
+.helper_text {
+    margin: auto;
+    position: absolute;
+    bottom: 40px;
+    text-align: center;
+    width: 100%;
+    color: #999;
 }

@@ -3,12 +3,11 @@ from .forms import CodeAuthForm, EmailAuthForm, StudentKomponentaBodoviForm
 from django import shortcuts
 from .models import KomponentaBodovi, Predmet, Student, StudentPredmet
 from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 import uuid
-
 
 from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist
@@ -25,6 +24,11 @@ def get_or_create_user(email):
         user.save()
 
     return user
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 class SignupView(TemplateView):
@@ -48,93 +52,6 @@ class SignupView(TemplateView):
             return redirect('signup')
 
 
-class HomeView(TemplateView):
-    template_name = "home.html"
-
-    def get(self, request):
-
-        predmeti = Predmet.objects.all()
-
-        return render(request, self.template_name, {'predmeti': predmeti})
-
-
-class AddPredmetView(TemplateView):
-
-    def get(self, request, id):
-
-        predmet = Predmet.objects.get(pk=id)
-
-        student_predmet = StudentPredmet()
-        student_predmet.student = request.user.student
-        student_predmet.predmet = predmet
-
-        student_predmet.save()
-
-        for komponenta in predmet.komponenta_set.all():
-            realizirana_komponenta = KomponentaBodovi()
-            realizirana_komponenta.komponenta = komponenta
-            realizirana_komponenta.points_collected = 0
-            realizirana_komponenta.predmet = student_predmet
-            realizirana_komponenta.save()
-
-        return redirect('home')
-
-
-class MyPredmetiView(TemplateView):
-    template_name = "moj-predmeti.html"
-
-    def get(self, request):
-
-        predmeti = StudentPredmet.objects.filter(student=request.user.student)
-        predmeti_list = []
-        for predmet in predmeti:
-            components = []
-            ukupno = 0
-            for component in predmet.predmet.komponenta_set.all():
-                points = 0
-                for bodovi in component.komponentabodovi_set.all():
-                    points += bodovi.points_collected
-                components.append({
-                    "name": component.name,
-                    "points": points,
-                })
-                ukupno += points
-
-
-
-            points_from = StudentKomponentaBodoviForm(initial={'predmet': predmet})
-
-
-
-            predmeti_list.append({
-                'predmet': predmet,
-                "form": points_from,
-                'komponente': components,
-                'points': ukupno,
-            })
-
-        return render(request, self.template_name, {'predmeti': predmeti_list})
-
-
-class UpdatePointsView(TemplateView):
-
-    def post(self, request, id):
-
-
-        form = StudentKomponentaBodoviForm(request.POST)
-
-        
-
-        if form.is_valid():
-            
-            komp = form.save()
-
-            return redirect('moj-predmeti')
-        else:
-            return redirect('moj-predmeti')
-            
-
-
 class PreLoginView(TemplateView):
     template_name = 'prelogin.html'
 
@@ -146,13 +63,8 @@ class PreLoginView(TemplateView):
     def post(self, request):
         form = EmailAuthForm(request.POST)
         if form.is_valid():
-            
+
             email = form.cleaned_data.get('email')
-
-            
-
-
-
 
             code = uuid.uuid4().hex[:6].upper()
 
@@ -183,8 +95,9 @@ class PreLoginView(TemplateView):
             print("invalid form")
             return redirect('login')
 
+
 class LoginView(TemplateView):
-    template_name = "prelogin.html"
+    template_name = "login.html"
 
     def get(self, request):
 
@@ -194,24 +107,96 @@ class LoginView(TemplateView):
     def post(self, request):
         form = CodeAuthForm(request.POST)
         if form.is_valid():
-            
+
             email = form.cleaned_data.get('email')
             code = form.cleaned_data.get('code')
-            
+
             try:
-            
+
                 user = authenticate(email=email, code=code)
-                
-                login(request, user, backend='fer_grades.auth_backend.PasswordlessAuthBackend')
+
+                login(request, user,
+                      backend='fer_grades.auth_backend.PasswordlessAuthBackend')
                 return redirect('home')
-
-
-
-
 
             except ObjectDoesNotExist:
                 return redirect('login')
-                    
-            
+
         else:
             return redirect('login')
+
+
+class HomeView(TemplateView):
+    template_name = "home.html"
+
+    def get(self, request):
+
+        predmeti = Predmet.objects.all()
+
+        return render(request, self.template_name, {'predmeti': predmeti})
+
+
+class AddPredmetView(TemplateView):
+
+    def get(self, request, id):
+
+        predmet = Predmet.objects.get(pk=id)
+
+        student_predmet = StudentPredmet()
+        student_predmet.student = request.user.student
+        student_predmet.predmet = predmet
+
+        student_predmet.save()
+
+        return redirect('home')
+
+
+class MyPredmetiView(TemplateView):
+    template_name = "moj-predmeti.html"
+
+    def get(self, request):
+
+        predmeti = StudentPredmet.objects.filter(student=request.user.student)
+        predmeti_list = []
+        for predmet in predmeti:
+            components = []
+            ukupno = 0
+            for component in predmet.predmet.komponenta_set.all():
+                points = 0
+                for bodovi in component.komponentabodovi_set.filter(predmet=predmet):
+                    points += bodovi.points_collected
+                components.append({
+                    "name": component.name,
+                    "points": points,
+                    "max_points": component.max_points,
+                    "prag": component.max_points * component.prag,
+                })
+                ukupno += points
+
+            points_from = StudentKomponentaBodoviForm(
+                initial={'predmet': predmet})
+
+            predmeti_list.append({
+                'predmet': predmet,
+                "form": points_from,
+                'komponente': components,
+                'points': ukupno,
+                'grade': "labosi uvijet - NE",
+            })
+
+        return render(request, self.template_name, {'predmeti': predmeti_list})
+
+
+class UpdatePointsView(TemplateView):
+
+    def post(self, request, id):
+
+        form = StudentKomponentaBodoviForm(request.POST)
+
+        if form.is_valid():
+
+            komp = form.save()
+
+            return redirect('moj-predmeti')
+        else:
+            return redirect('moj-predmeti')

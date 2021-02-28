@@ -17,10 +17,15 @@
     {% endif %}
     {% endif %}
 
-    <form method="post">
+    <h2>Kako se ulogirati? </h2>
+    <p>Zaboravi na zaboravljene lozinke.</p>
+
+    <p>Upisi svoj fer-mail ovidije, dobi privremeni kod na mail, upisi kod i spreman si!</p>
+
+    <form class="login_form" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Sign up</button>
+        <button type="submit">Get Code</button>
     </form>
 
 

@@ -10,6 +10,7 @@ class KomponentaInline(admin.TabularInline):
 class UvjetiInline(admin.TabularInline):
     model = Uvjeti
 
+
 class StudentPredmetInline(admin.TabularInline):
     model = StudentPredmet
 
@@ -32,3 +33,13 @@ class StudentAdmin(admin.ModelAdmin):
     inlines = [
         StudentPredmetInline,
     ]
+
+
+@admin.register(StudentPredmet)
+class StudentPredmetAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(KomponentaBodovi)
+class KomponentaBodoviAdmin(admin.ModelAdmin):
+    pass

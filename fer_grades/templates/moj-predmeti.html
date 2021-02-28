@@ -2,46 +2,126 @@
 
 {% block content %}
 
+<div class="overview_wrapper">
+    <div>
+        <h3>Prosjek:
+            <span>3.54</span>
+        </h3>
+    </div>
+    <table class="overview_table">
+        <tr>
+            <th>Predmet</th>
+            <th>Bodovi</th>
+            <th>Ocjena</th>
+        </tr>
+        {%for predmet in predmeti %}
+        <tr>
+            <td>{{predmet.predmet}}</td>
+            <td>{{predmet.points}}</td>
+            <td>{{predmet.grade}}</td>
+        </tr>
+
+        {% endfor %}
+    </table>
+
+
+
+</div>
+
 
 
 {%for stavka in predmeti %}
 <div class="card">
-    <div class="card_title">{{stavka.predmet.predmet.name}}</div>
-    <div>ukupno: {{stavka.points}}</div>
+    <div class="card_title">
+        <div>
+            <h3> {{stavka.predmet.predmet.name}}</h3>
+        </div>
+        <div>
+            <h3 class="right">{{stavka.points}}</h3>
+        </div>
+    </div>
 
     <div class="card_component_wrapper">
 
         {%for komponenta in stavka.komponente %}
         <div>
-            <p>{{komponenta.name}}</p>
+            <p><strong>{{komponenta.name}}</strong></p>
+            <div>bodova: {{komponenta.points}} / {{komponenta.max_points}}</div>
+            <div>prag: {{komponenta.prag}}</div>
 
+            <div class="progress_bar">
+                <div style="width: calc({{komponenta.points}}% * 100 / {{komponenta.max_points}} )"></div>
+                {% if komponenta.prag > 0 %}
+                <div class="prag" style="margin-left: calc({{komponenta.prag}}% * 100 / {{komponenta.max_points}} );">
+                </div>
+                {%endif%}
 
-            <div>bodova: {{komponenta.points}}</div>
-        </div>
+            </div>
+        </div> {% endfor %} </div>
+    <div class="card_component_wrapper">
+        uvjeti:<br />
+        {%for uvjet in stavka.predmet.predmet.uvjeti_set.all %}
+
+        <div><b>{{uvjet.uvjet_tekst}}</b></div>
         {% endfor %}
     </div>
     <div class="card_component_wrapper">
-        {%for komponenta in stavka.predmet.komponentabodovi_set.all %}
+        <table class="points_table">
+            <tr>
+                <th>
+                    <pre>Opis          </pre>
+                </th>
+                <th>
+                    <pre>Komponenta    </pre>
+                </th>
+                <th>
+                    <pre>bodovi</pre>
+                </th>
+                <th>
+                    <pre>    </pre>
+                </th>
+            </tr>
+            {%for komponenta in stavka.predmet.komponentabodovi_set.all %}
+            <tr>
+                <td>{{komponenta.description|default:""}}</td>
+                <td>{{komponenta.komponenta.name}}</td>
+                <td>{{komponenta.points_collected}}</td>
+                <td></td>
 
-        <div>
-            <p>{{komponenta.komponenta.name}}</p>
-            <p>{{komponenta.points_collected}}</p>
+            </tr>
+            {% endfor %}
+
+
+        </table>
+        <div class="intable_form" id="intable_form_{{stavka.predmet.id}}">
+            <form method="post" action="/moj-predmeti/update/{{stavka.predmet.id}}">
+                {% csrf_token %}
+
+                {{ stavka.form.description }}
+                {{ stavka.form.komponenta }}
+                {{ stavka.form.points_collected }}
+
+                <button type="submit" class="button-primary intable_input">Dodaj</button>
+
+                {{ stavka.form.predmet }}
+            </form>
+
 
         </div>
 
-        {% endfor %}
-
     </div>
-    <div class="card_component_wrapper">
-
-        <form method="post" action="/moj-predmeti/update/{{stavka.predmet.id}}">
-            {% csrf_token %}
-            {{ stavka.form.as_p }}
-            <button type="submit">Dodaj</button>
-        </form>
-    </div>
+    <button class="button-primary add_predmet_btn" id="points_plus_{{stavka.predmet.id}}">+</button>
 
 </div>
+<script>
+    $("#points_plus_{{stavka.predmet.id}}").click(() => {
+
+        $("#intable_form_{{stavka.predmet.id}}").css('display', 'inline-block')
+    });
+</script>
 {% endfor %}
+
+
+
 
 {% endblock %}

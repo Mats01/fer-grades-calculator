@@ -19,13 +19,13 @@ class Komponenta(models.Model):
     predmet = models.ForeignKey(Predmet, on_delete=models.CASCADE)
     max_points = models.FloatField(default=0)
     prag = models.FloatField(default=0)
-     
 
     class Meta:
         verbose_name_plural = "Komponente"
 
     def __str__(self):
         return self.name
+
 
 class Uvjeti(models.Model):
     predmet = models.ForeignKey(Predmet, on_delete=models.CASCADE)
@@ -35,7 +35,6 @@ class Uvjeti(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     login_code = models.CharField(max_length=6, blank=True, null=True)
-
 
     def __str__(self):
         return self.user.username
@@ -51,8 +50,8 @@ class StudentPredmet(models.Model):
 
 class KomponentaBodovi(models.Model):
     predmet = models.ForeignKey(StudentPredmet, on_delete=models.CASCADE)
-    komponenta = models.ForeignKey(Komponenta, 
-        on_delete=models.CASCADE,
-    )
+    komponenta = models.ForeignKey(Komponenta,
+                                   on_delete=models.CASCADE,
+                                   )
     points_collected = models.FloatField(default=0)
-
+    description = models.CharField(max_length=256, blank=True, null=True)

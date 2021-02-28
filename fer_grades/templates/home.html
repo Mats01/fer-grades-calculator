@@ -13,7 +13,7 @@
 <div class="card">
     <div class="card_title">{{predmet.name}}</div>
     <a class="fer_url" href="{{predmet.fer_url}}" target="_blank">{{predmet.fer_url}}</a>
-    <div class="card_component_wrapper">
+    <div class="card_component_gird">
         {%for komponenta in predmet.komponenta_set.all %}
         <div>
             <p>{{komponenta.name}}</p>

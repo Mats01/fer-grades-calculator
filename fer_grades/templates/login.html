@@ -3,37 +3,39 @@
 {% block content %}
 <div class="login_wrapper">
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
 
-{% if next %}
+    {% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+    {% endif %}
+
+    {% if next %}
     {% if user.is_authenticated %}
     <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
+        please login with an account that has access.</p>
     {% else %}
     <p>Please login to see this page.</p>
     {% endif %}
-{% endif %}
+    {% endif %}
 
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+    <h2>Provjeri svoj fer-mail!</h2>
 
-<input type="submit" value="login">
-<input type="hidden" name="next" value="{{ next }}">
-</form>
+    <p>Ovaj jednokratni kod automatski ce ti stvoriti racun ukoliko ga vec nemas.</p>
+    <p>Zelis se ulogirati na drugom uredaju? Sve sto trebas je i tamo upisati svoj fer mail, upisati kod i svi tvoji
+        predmeti ce te vec cekati.</p>
 
-{# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+
+    <form class="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Get In</button>
+    </form>
+
+
+
+</div>
+
+<div class="helper_text">
+    <p>pssst... u slucaju da ne dobijes kod u razomnom vremenu 😬 oops, ipak niko nije savrsen</p>
+    <p>javi mi se na matej.butkovic@fer.hr i pokusat cu ispraviti probelm ili ti poslati kod</p>
 </div>
 {% endblock %}

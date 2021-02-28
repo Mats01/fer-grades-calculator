@@ -105,6 +105,8 @@ AUTHENTICATION_BACKENDS = (
     'fer_grades.auth_backend.PasswordlessAuthBackend',
 )
 
+LOGIN_URL = '/login/'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
