@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login_wrapper">
+
+
+
+    <div class="card">
+        <div class="card_title">
+            <div>
+                <h3> {{predmet.name}}</h3>
+
+            </div>
+            <div>
+            </div>
+        </div>
+        <a class="fer_url" href="{{predmet.fer_url}}" target="_blank">{{predmet.fer_url}}</a>
+
+
+
+        <div class="card_component_wrapper">
+            <div class="predmet_two_clumns">
+                <div>
+                    <h4>Tu dodaji uvjete</h4>
+
+                    <form method="post" action="uvjeti/">
+                        {% csrf_token %}
+
+                        {{ uvjeti_formset.management_form }}
+
+                        {% for form in uvjeti_formset %}
+                        <div class="">
+                            {{ form }}
+
+                        </div>
+
+
+                        {% endfor %}
+                        <button type="submit">Spremi Uvjete</button>
+                    </form>
+
+                </div>
+                <div class="predmet_ocjene">
+                    <h4>Tu promijeni pragove za ocjene</h4>
+
+                    <form class="" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit">Spremi ocjene</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card_component_wrapper">
+            <h4>Tu dodaj komponente</h4>
+            <p>npr. meduispit, zavrsni ispit, labosi</p>
+
+            <form method="post" action="komponente/">
+                {% csrf_token %}
+
+                {{ komponente_formset.management_form }}
+
+                {% for form in komponente_formset %}
+                <div class="">
+                    {{ form }}
+
+                </div>
+
+
+                {% endfor %}
+                <button type="submit">Spremi Komponente</button>
+            </form>
+        </div>
+
+
+        <a href="/add-predmet/{{predmet.id}}/">
+            <button class="button-primary add_predmet_btn">Dodaj mojim predmetima</button>
+        </a>
+
+    </div>
+
+
+
+
+
+</div>
+
+
+{% endblock %}

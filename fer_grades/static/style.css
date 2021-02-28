@@ -10,6 +10,10 @@ pre {
 
 h3 {
 
+    font-size: 1.3em;
+}
+
+h4 {
     font-size: 1.2em;
 }
 
@@ -140,6 +144,10 @@ h3 {
 
 .intable_form {
     display: none;
+}
+
+.intable_form_svisible {
+    display: inline-block;
 }
 
 .intable_form form {

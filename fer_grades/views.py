@@ -1,7 +1,10 @@
 
-from .forms import CodeAuthForm, EmailAuthForm, StudentKomponentaBodoviForm
+from django.contrib.auth import forms
+from django.forms import modelformset_factory
+from django.forms.models import inlineformset_factory
+from .forms import CodeAuthForm, EditPredmetForm, EmailAuthForm, PredmetForm, StudentKomponentaBodoviForm
 from django import shortcuts
-from .models import KomponentaBodovi, Predmet, Student, StudentPredmet
+from .models import Komponenta, KomponentaBodovi, Predmet, Student, StudentPredmet, Uvjeti
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -117,7 +120,7 @@ class LoginView(TemplateView):
 
                 login(request, user,
                       backend='fer_grades.auth_backend.PasswordlessAuthBackend')
-                return redirect('home')
+                return redirect('moj-predmeti')
 
             except ObjectDoesNotExist:
                 return redirect('login')
@@ -136,7 +139,7 @@ class HomeView(TemplateView):
         return render(request, self.template_name, {'predmeti': predmeti})
 
 
-class AddPredmetView(TemplateView):
+class AddToMyPredmetiView(TemplateView):
 
     def get(self, request, id):
 
@@ -148,7 +151,7 @@ class AddPredmetView(TemplateView):
 
         student_predmet.save()
 
-        return redirect('home')
+        return redirect('moj-predmeti')
 
 
 class MyPredmetiView(TemplateView):
@@ -219,3 +222,97 @@ class DeletePointsView(TemplateView):
 
         KomponentaBodovi.objects.get(pk=id).delete()
         return redirect('moj-predmeti')
+
+
+class AddPredmetView(TemplateView):
+    template_name = "new-predmet.html"
+
+    def get(self, request):
+        PredmetFormSet = modelformset_factory(Predmet, exclude=())
+
+        formset = PredmetFormSet()
+
+        form = PredmetForm()
+
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request,):
+
+        form = PredmetForm(request.POST)
+
+        if form.is_valid():
+            predmet = form.save(commit=False)
+            predmet.created_by = User.objects.get(pk=request.user.id)
+            predmet.save()
+
+            return redirect('/dodaj-predmet/new/%s/' % predmet.pk)
+        else:
+            return render(request, self.template_name, {'form': form})
+
+
+class EditPredmetView(TemplateView):
+    template_name = "edit-predmet.html"
+
+    def get(self, request, id):
+
+        predmet = Predmet.objects.get(pk=id)
+        if not predmet.created_by:
+            return redirect('new-predmet')
+
+        if not (predmet.created_by.id == request.user.id):
+            return redirect('new-predmet')
+
+        KomponentaFormSet = inlineformset_factory(
+            Predmet, Komponenta, exclude=(), extra=1)
+
+        komponente_formset = KomponentaFormSet(instance=predmet)
+
+        UvjetiFormSet = inlineformset_factory(
+            Predmet, Uvjeti, exclude=(), extra=1)
+
+        uvjeti_formset = UvjetiFormSet(instance=predmet)
+
+        form = EditPredmetForm()
+
+        return render(request, self.template_name, {'predmet': predmet, 'form': form, 'komponente_formset': komponente_formset, 'uvjeti_formset': uvjeti_formset})
+
+    def post(self, request, id):
+
+        form = PredmetForm(request.POST)
+        predmet = Predmet.objects.get(pk=id)
+
+        if form.is_valid():
+            form.save()
+
+        return redirect('/dodaj-predmet/new/%s/' % predmet.pk)
+
+
+class UpdatePredemetUvjetiView(TemplateView):
+    def post(self, request, id):
+
+        UvjetiFormSet = inlineformset_factory(
+            Predmet, Uvjeti, exclude=(), extra=1)
+
+        predmet = Predmet.objects.get(pk=id)
+
+        form = UvjetiFormSet(request.POST, instance=predmet)
+
+        if form.is_valid():
+            form.save()
+
+        return redirect('/dodaj-predmet/new/%s/' % predmet.pk)
+
+
+class UpdatePredemetKomponenteView(TemplateView):
+    def post(self, request, id):
+
+        KomponentaFormSet = inlineformset_factory(
+            Predmet, Komponenta, exclude=(), extra=1)
+        predmet = Predmet.objects.get(pk=id)
+
+        form = KomponentaFormSet(request.POST, instance=predmet)
+
+        if form.is_valid():
+            form.save()
+
+        return redirect('/dodaj-predmet/new/%s/' % predmet.pk)

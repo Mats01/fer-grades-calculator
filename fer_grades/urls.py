@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from .views import AddPredmetView, DeletePointsView, HomeView, MyPredmetiView, PreLoginView, SignupView, UpdatePointsView, LoginView, logout_view
+from .views import AddPredmetView, AddToMyPredmetiView, DeletePointsView, EditPredmetView, HomeView, MyPredmetiView, PreLoginView, SignupView, UpdatePointsView, LoginView, UpdatePredemetKomponenteView, UpdatePredemetUvjetiView, logout_view
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
@@ -32,11 +32,19 @@ urlpatterns = [
         name='password_reset'),
     path('signup/', SignupView.as_view(), name='signup'),
 
-    path('add-predmet/<id>/', login_required(AddPredmetView.as_view())),
+    path('add-predmet/<id>/', login_required(AddToMyPredmetiView.as_view())),
     path('', login_required(MyPredmetiView.as_view()),
          name='moj-predmeti'),
     path('moj-predmeti/update/<id>', login_required(UpdatePointsView.as_view())),
     path('moj-predmeti/delete/<id>', login_required(DeletePointsView.as_view())),
-    path('dodaj-predmet/', login_required(HomeView.as_view()), name='home'),
+    path('dodaj-predmet/', login_required(HomeView.as_view()), name='predmet-list'),
+    path('dodaj-predmet/new/',
+         login_required(AddPredmetView.as_view()), name='new-predmet'),
+    path('dodaj-predmet/new/<id>/',
+         login_required(EditPredmetView.as_view())),
+    path('dodaj-predmet/new/<id>/uvjeti/',
+         login_required(UpdatePredemetUvjetiView.as_view())),
+    path('dodaj-predmet/new/<id>/komponente/',
+         login_required(UpdatePredemetKomponenteView.as_view())),
 
 ]

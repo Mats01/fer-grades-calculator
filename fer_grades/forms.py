@@ -1,5 +1,7 @@
 import re
 
+from django.forms import fields
+
 from .models import Komponenta, KomponentaBodovi, Predmet
 from django import forms
 from django.core.exceptions import ValidationError
@@ -59,3 +61,16 @@ class CodeAuthForm(forms.Form):
             raise ValidationError("Dana email adresa nije FER emial adresa")
 
         return data
+
+
+class PredmetForm(forms.ModelForm):
+    class Meta:
+        model = Predmet
+
+        fields = ['name', 'fer_url', ]
+
+
+class EditPredmetForm(forms.ModelForm):
+    class Meta:
+        model = Predmet
+        fields = ['dovoljan', 'dobar', 'vrlo_dobar', 'odlican', ]
