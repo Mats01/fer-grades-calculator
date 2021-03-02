@@ -34,12 +34,26 @@ class StudentAdmin(admin.ModelAdmin):
         StudentPredmetInline,
     ]
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(id=request.user.student.id)
+
 
 @admin.register(StudentPredmet)
 class StudentPredmetAdmin(admin.ModelAdmin):
-    pass
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(student=request.user.student)
 
 
 @admin.register(KomponentaBodovi)
 class KomponentaBodoviAdmin(admin.ModelAdmin):
-    pass
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(predmet__student=request.user.student)
