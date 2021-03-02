@@ -5,7 +5,7 @@
 <div class="overview_wrapper">
     <div>
         <h3>Prosjek:
-            <span>3.54</span>
+            <span>{{prosjek}}</span>
         </h3>
     </div>
     <table class="overview_table">
@@ -41,8 +41,17 @@
             <h3 class="right">{{stavka.points}}</h3>
         </div>
     </div>
-    <a class="fer_url" href="{{stavka.predmet.predmet.fer_url}}" target="_blank">{{stavka.predmet.predmet.fer_url}}</a>
-
+    <div class="card_component_wrapper">
+        <div class="predmet_two_clumns">
+            <div>
+                <a class="fer_url" href="{{stavka.predmet.predmet.fer_url}}"
+                    target="_blank">{{stavka.predmet.predmet.fer_url}}</a>
+            </div>
+            <div class="predmet_ocjene">
+                <a class="fer_url" href="/moj-predmeti/delete-predmet/{{stavka.predmet.pk}}">Ukloni predmet</a>
+            </div>
+        </div>
+    </div>
 
     <div class="card_component_wrapper">
 

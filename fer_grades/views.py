@@ -185,12 +185,32 @@ class AddToMyPredmetiView(TemplateView):
     def get(self, request, id):
 
         predmet = Predmet.objects.get(pk=id)
+        try:
+            student_predmet = StudentPredmet.objects.filter(
+                predmet=predmet, student=request.user.student)
+            if student_predmet:
+                return redirect('predmet-list')
+        except:
+            pass
 
         student_predmet = StudentPredmet()
         student_predmet.student = request.user.student
         student_predmet.predmet = predmet
 
         student_predmet.save()
+
+        return redirect('predmet-list')
+
+
+class DeleteStudentPredmetiView(TemplateView):
+
+    def get(self, request, id):
+        try:
+            predmet = StudentPredmet.objects.get(pk=id)
+
+            predmet.delete()
+        except ObjectDoesNotExist:
+            pass
 
         return redirect('moj-predmeti')
 
@@ -238,8 +258,14 @@ class MyPredmetiView(TemplateView):
                 'points': ukupno,
                 'grade': grade,
             })
+        prosjek = 0.0
+        if len(predmeti_list) > 0:
 
-        return render(request, self.template_name, {'predmeti': predmeti_list})
+            for predmet in predmeti_list:
+                prosjek += predmet['grade']
+            prosjek = prosjek / len(predmeti_list)
+
+        return render(request, self.template_name, {'predmeti': predmeti_list, 'prosjek': prosjek})
 
 
 class UpdatePointsView(TemplateView):

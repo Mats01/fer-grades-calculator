@@ -87,7 +87,7 @@ class EmailAndPassAuthForm(forms.Form):
         data = self.cleaned_data['email']
         # if "matej.butkovic@fer.hr" not in data:
         #     raise ValidationError("Dana email adresa nije FER emial adresa")
-        if not re.match("^[a-z]+.[a-z]+[0-9]*@fer.hr$", data):
+        if not re.match("^.*@fer\.hr$", data):
             raise ValidationError("Dana email adresa nije FER emial adresa")
 
         return data

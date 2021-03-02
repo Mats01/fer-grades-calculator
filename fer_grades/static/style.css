@@ -43,7 +43,7 @@ h4 {
     display: grid;
     grid-template-rows: auto auto auto auto;
     width: min(80vw, 800px);
-    margin: 20px auto;
+    margin: 20px auto 40px auto;
     border: 1px solid lightgray;
     border-radius: 6px;
     padding-top: 10px;
@@ -239,8 +239,8 @@ button.intable_input {
 
 @media screen and (max-width: 600px) {
     .predmet_two_clumns {
-        display: grid;
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
     }
 
     .predmet_ocjene {
