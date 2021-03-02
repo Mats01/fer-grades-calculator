@@ -339,14 +339,14 @@ class EditPredmetView(TemplateView):
 
         uvjeti_formset = UvjetiFormSet(instance=predmet)
 
-        form = EditPredmetForm()
+        form = EditPredmetForm(instance=predmet)
 
         return render(request, self.template_name, {'predmet': predmet, 'form': form, 'komponente_formset': komponente_formset, 'uvjeti_formset': uvjeti_formset})
 
     def post(self, request, id):
 
-        form = PredmetForm(request.POST)
         predmet = Predmet.objects.get(pk=id)
+        form = EditPredmetForm(request.POST, instance=predmet)
 
         if form.is_valid():
             form.save()
