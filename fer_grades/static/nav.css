@@ -1,0 +1,44 @@
+.toolbar {
+    width: 100vw;
+    position: fixed;
+    background-color: white;
+    top: 0;
+    left: 0;
+    display: flex;
+    height: 8vh;
+    z-index: 4;
+    box-sizing: border-box;
+    align-items: center;
+    align-content: flex-start;
+    box-shadow: 0px 4px 5px 0px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding-top: 1vh;
+    font-size: 12px;
+
+}
+
+.toolbar>div {
+    flex: 0 1 150px;
+    /*  No stretching: */
+    margin: 5px;
+}
+
+.icon_with_text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1em;
+}
+
+.icon_with_text a {
+    text-align: center;
+}
+
+
+.icon_with_text div {
+    flex: 1 1 2vh;
+}
+
+.gg-home {
+    margin-top: 4px;
+}

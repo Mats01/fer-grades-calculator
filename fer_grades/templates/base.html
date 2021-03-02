@@ -16,10 +16,16 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+    <link href='https://css.gg/user-list.css' rel='stylesheet'>
+    <link href='https://css.gg/arrow-right-o.css' rel='stylesheet'>
+    <link href='https://css.gg/home.css' rel='stylesheet'>
+    <link href='https://css.gg/list.css' rel='stylesheet'>
+
 
     <link rel="stylesheet" href="{% static 'css/skeleton.css' %}">
     <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'nav.css' %}">
 
 
 
@@ -29,18 +35,66 @@
 
 <body>
     <div class="toolbar">
+        {% if user.is_authenticated %}
 
-        <a href="/" style="text-decoration:none; color:black">
+        <div class="icon_with_text">
 
-            FER Ocjene
-        </a>
-        <a href="/admin">
-            <i class="gg-user-list"></i>
-        </a>
+            <div>
+                <a href="/">
+                    <i class="gg-home"></i>
+                </a>
+            </div>
+
+            <div>
+                Moje Ocjene
+            </div>
+        </div>
+        <div class="icon_with_text">
+
+            <div>
+                <a href="/dodaj-predmet/">
+                    <i class="gg-list"></i>
+                </a>
+            </div>
+
+            <div>
+                Svi Predmeti
+            </div>
+        </div>
+        <div class="icon_with_text">
+
+            <div>
+                {% if user.is_staff %}
+
+                <a class="admin" href="/admin/fer_grades/predmet/">
+                    <i class="gg-user-list"></i>
+                </a>
+                {%else%}
+                <a class="admin" href="/">
+                    <i class="gg-user-list"></i>
+                </a>
+                {% endif %}
+
+            </div>
+
+            <div>
+                {{user.username}}
+            </div>
+        </div>
+        <div class="icon_with_text">
+            <div>
+                <a href="/logout"><i class="gg-arrow-right-o"></i></a>
+            </div>
+            <div>
+                Logout
+            </div>
+        </div>
+        {%else%}
+        <h3>Postani korisnik</h3>
+        {% endif %}
+
     </div>
 
-{{user.username}}
-<a href="/logout"> Logout</a>
 
     {% block content %}
 
