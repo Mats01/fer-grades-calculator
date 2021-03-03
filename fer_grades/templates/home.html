@@ -4,21 +4,26 @@
 
 <h2>Kako dodati predmet?</h2>
 <p>Provjeri listu vec dodanih predmeta ispod, mozda te tvoj predemt vec ceka.</p>
-<p>Ako ipak nije tako <a href="/dodaj-predmet/new/">mozes ga dodati!</a> (Time cinis dobro djelo jer ce taj predmet biti dostupan i drugima koji onda nece morati kopati i pronaci pragove i komponente predmeta 🙂)</p>
+<p>Ako ipak nije tako <a href="/dodaj-predmet/new/">mozes ga dodati!</a> (Time cinis dobro djelo jer ce taj predmet biti
+    dostupan i drugima koji onda nece morati kopati i pronaci pragove i komponente predmeta 🙂)</p>
 
 {%for predmet in predmeti %}
 <div class="card">
-    <div class="card_title">{{predmet.name}}</div>
-    <a class="fer_url" href="{{predmet.fer_url}}" target="_blank">{{predmet.fer_url}}</a>
-    <div class="card_component_gird">
-        {%for komponenta in predmet.komponenta_set.all %}
-        <div>
-            <p>{{komponenta.name}}</p>
-            <p>{{komponenta.max_points}}</p>
-        </div>
-        {% endfor %}
+    <div class="card_title">{{predmet.name}}
+        <a class="fer_url" href="{{predmet.fer_url}}" target="_blank">{{predmet.fer_url}}</a>
     </div>
+    <div>
+        <p><strong>Način ocjenjivanja:</strong></p>
+        <div class="card_component_gird">
+            {%for komponenta in predmet.komponenta_set.all %}
+            <div class="card_component_gird_elem">
+                <p>{{komponenta.name}}</p>
+                <p><strong>{{komponenta.max_points}}</strong></p>
+            </div>
+            {% endfor %}
+        </div>
 
+    </div>
     <div class="card_component_wrapper">
         <div class="predmet_two_clumns">
             <div>
