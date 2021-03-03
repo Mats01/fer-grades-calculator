@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 class Predmet(models.Model):
 
@@ -23,7 +25,8 @@ class Komponenta(models.Model):
     name = models.CharField(max_length=200)
     predmet = models.ForeignKey(Predmet, on_delete=models.CASCADE)
     max_points = models.FloatField(default=0)
-    prag = models.FloatField(default=0)
+    prag = models.FloatField(default=0, validators=[
+                             MinValueValidator(0), MaxValueValidator(1)])
 
     class Meta:
         verbose_name_plural = "Komponente"

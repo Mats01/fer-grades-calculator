@@ -20,6 +20,10 @@ h4 {
     font-size: 1.2em;
 }
 
+input[type=number] {
+    width: 50px;
+}
+
 .right {
     text-align: right;
 }
@@ -45,7 +49,7 @@ h4 {
 .card {
     display: grid;
     grid-template-rows: auto auto auto auto;
-    width: min(80vw, 800px);
+    width: min(80vw, 900px);
     margin: 20px auto 40px auto;
     border: 1px solid lightgray;
     border-radius: 6px;
@@ -87,6 +91,7 @@ h4 {
     justify-content: center;
     flex-direction: column;
     margin-bottom: 20px;
+    overflow-x: scroll;
 
 }
 
@@ -164,7 +169,6 @@ h4 {
 
 .intable_input {
     height: 2.5rem !important;
-    height: 2.5rem !important;
     flex-grow: 1;
     margin: 8px 10px 4px 10px;
 }
@@ -238,6 +242,26 @@ button.intable_input {
 
 .centered_alone_btn a {
     margin: auto;
+}
+
+.wide_form {
+    width: 100%;
+}
+
+.edit_component_inner_from {
+    width: 100%;
+    overflow-x: scroll;
+    display: flex;
+}
+
+.edit_component_inner_from input {
+    height: 2.5rem !important;
+    flex-grow: 1;
+    margin: 8px 10px 4px 10px;
+}
+
+.save_comps {
+    margin: 20px auto;
 }
 
 @media screen and (max-width: 600px) {

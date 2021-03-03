@@ -330,7 +330,7 @@ class EditPredmetView(TemplateView):
             return redirect('new-predmet')
 
         KomponentaFormSet = inlineformset_factory(
-            Predmet, Komponenta, exclude=(), extra=1)
+            Predmet, Komponenta, exclude=(), extra=3)
 
         komponente_formset = KomponentaFormSet(instance=predmet)
 

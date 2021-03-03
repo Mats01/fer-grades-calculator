@@ -54,21 +54,22 @@
         <div class="card_component_wrapper">
             <h4>Tu dodaj komponente</h4>
             <p>npr. meduispit, zavrsni ispit, labosi</p>
+            <p>prag mora biti broj izmedu 0 i 1 (prikazuje postotak)</p>
 
-            <form method="post" action="komponente/">
+            <form method="post" action="komponente/" class="wide_form">
                 {% csrf_token %}
 
                 {{ komponente_formset.management_form }}
 
                 {% for form in komponente_formset %}
-                <div class="">
+                <div class="edit_component_inner_from">
                     {{ form }}
 
                 </div>
 
 
                 {% endfor %}
-                <button type="submit">Spremi Komponente</button>
+                <button type="submit" class="save_comps">Spremi Komponente</button>
             </form>
         </div>
 
