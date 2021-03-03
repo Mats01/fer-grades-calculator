@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="login_wrapper">
+{% if request.GET.worked == "False" %}<p>Nazalost automatsko pronalaznje podataka o predmetu nije uspjelo. Molim te da sam/sama uneses podatke</p>{% endif %}
 
 
 

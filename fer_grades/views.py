@@ -307,39 +307,43 @@ class AddPredmetView(TemplateView):
         form = PredmetForm(request.POST)
 
         if form.is_valid():
+            worked = False
+
             predmet = form.save(commit=False)
             predmet.created_by = User.objects.get(pk=request.user.id)
+            try:
+                predmet_data = get_predmet_data(predmet.fer_url)
 
-            predmet_data = get_predmet_data(predmet.fer_url)
-
-            """
-                {'komponente': [{'bodovi': '20', 'ime': 'Domaće zadaće', 'prag': '0'},
-                    {'bodovi': '10', 'ime': 'Sudjelovanje u nastavi', 'prag': '0'},
-                    {'bodovi': '30', 'ime': 'Međuispit: Pismeni', 'prag': '0'},
-                    {'bodovi': '40', 'ime': 'Završni ispit: Pismeni', 'prag': '0'}],
-                'ocjenjivanje': {'dobar': '60',
-                                'dovoljan': '50',
-                                'odlican': '90',
-                                'vrlo_dobar': '75'}}
                 """
+                    {'komponente': [{'bodovi': '20', 'ime': 'Domaće zadaće', 'prag': '0'},
+                        {'bodovi': '10', 'ime': 'Sudjelovanje u nastavi', 'prag': '0'},
+                        {'bodovi': '30', 'ime': 'Međuispit: Pismeni', 'prag': '0'},
+                        {'bodovi': '40', 'ime': 'Završni ispit: Pismeni', 'prag': '0'}],
+                    'ocjenjivanje': {'dobar': '60',
+                                    'dovoljan': '50',
+                                    'odlican': '90',
+                                    'vrlo_dobar': '75'}}
+                    """
 
-            predmet.dovoljan = predmet_data['ocjenjivanje']['dovoljan']
-            predmet.dobar = predmet_data['ocjenjivanje']['dobar']
-            predmet.vrlo_dobar = predmet_data['ocjenjivanje']['vrlo_dobar']
-            predmet.odlican = predmet_data['ocjenjivanje']['odlican']
-            predmet.save()
+                predmet.dovoljan = predmet_data['ocjenjivanje']['dovoljan']
+                predmet.dobar = predmet_data['ocjenjivanje']['dobar']
+                predmet.vrlo_dobar = predmet_data['ocjenjivanje']['vrlo_dobar']
+                predmet.odlican = predmet_data['ocjenjivanje']['odlican']
+                predmet.save()
 
-            for comp in predmet_data['komponente']:
-                component = Komponenta(
-                    name=comp['ime'],
-                    predmet=predmet,
-                    max_points=comp['bodovi'],
-                    prag=float(comp['prag'])/100.0)
-                component.save()
+                for comp in predmet_data['komponente']:
+                    component = Komponenta(
+                        name=comp['ime'],
+                        predmet=predmet,
+                        max_points=comp['bodovi'],
+                        prag=float(comp['prag'])/100.0)
+                    component.save()
 
-            predmet.save()
+                worked = True
+            except:
+                predmet.save()
 
-            return redirect('/dodaj-predmet/new/%s/' % predmet.pk)
+            return redirect('/dodaj-predmet/new/%s/?worked=%s' % (predmet.pk, worked))
         else:
             return render(request, self.template_name, {'form': form})
 
