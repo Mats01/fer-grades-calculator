@@ -21,7 +21,7 @@ h4 {
 }
 
 input[type=number] {
-    width: 50px;
+    width: 60px;
 }
 
 .right {
@@ -246,11 +246,12 @@ button.intable_input {
 
 .wide_form {
     width: 100%;
+    overflow-x: scroll;
+
 }
 
 .edit_component_inner_from {
     width: 100%;
-    overflow-x: scroll;
     display: flex;
 }
 

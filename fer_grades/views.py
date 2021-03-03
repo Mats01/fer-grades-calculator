@@ -15,6 +15,8 @@ import uuid
 from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist
 
+from .fer_scraper import get_predmet_data
+
 
 def get_or_create_user(email, password):
     try:
@@ -295,9 +297,6 @@ class AddPredmetView(TemplateView):
     template_name = "new-predmet.html"
 
     def get(self, request):
-        PredmetFormSet = modelformset_factory(Predmet, exclude=())
-
-        formset = PredmetFormSet()
 
         form = PredmetForm()
 
@@ -310,6 +309,34 @@ class AddPredmetView(TemplateView):
         if form.is_valid():
             predmet = form.save(commit=False)
             predmet.created_by = User.objects.get(pk=request.user.id)
+
+            predmet_data = get_predmet_data(predmet.fer_url)
+
+            """
+                {'komponente': [{'bodovi': '20', 'ime': 'Domaće zadaće', 'prag': '0'},
+                    {'bodovi': '10', 'ime': 'Sudjelovanje u nastavi', 'prag': '0'},
+                    {'bodovi': '30', 'ime': 'Međuispit: Pismeni', 'prag': '0'},
+                    {'bodovi': '40', 'ime': 'Završni ispit: Pismeni', 'prag': '0'}],
+                'ocjenjivanje': {'dobar': '60',
+                                'dovoljan': '50',
+                                'odlican': '90',
+                                'vrlo_dobar': '75'}}
+                """
+
+            predmet.dovoljan = predmet_data['ocjenjivanje']['dovoljan']
+            predmet.dobar = predmet_data['ocjenjivanje']['dobar']
+            predmet.vrlo_dobar = predmet_data['ocjenjivanje']['vrlo_dobar']
+            predmet.odlican = predmet_data['ocjenjivanje']['odlican']
+            predmet.save()
+
+            for comp in predmet_data['komponente']:
+                component = Komponenta(
+                    name=comp['ime'],
+                    predmet=predmet,
+                    max_points=comp['bodovi'],
+                    prag=float(comp['prag'])/100.0)
+                component.save()
+
             predmet.save()
 
             return redirect('/dodaj-predmet/new/%s/' % predmet.pk)
