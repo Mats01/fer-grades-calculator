@@ -311,6 +311,7 @@ class AddPredmetView(TemplateView):
 
             predmet = form.save(commit=False)
             predmet.created_by = User.objects.get(pk=request.user.id)
+            predmet.save()
             try:
                 predmet_data = get_predmet_data(predmet.fer_url)
 
@@ -341,7 +342,7 @@ class AddPredmetView(TemplateView):
 
                 worked = True
             except:
-                predmet.save()
+                pass
 
             return redirect('/dodaj-predmet/new/%s/?worked=%s' % (predmet.pk, worked))
         else:
