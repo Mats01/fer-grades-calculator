@@ -244,13 +244,13 @@ class MyPredmetiView(TemplateView):
                 initial={'predmet': predmet})
 
             grade = 1
-            if ukupno > predmet.predmet.dovoljan:
+            if ukupno >= predmet.predmet.dovoljan:
                 grade += 1
-            if ukupno > predmet.predmet.dobar:
+            if ukupno >= predmet.predmet.dobar:
                 grade += 1
-            if ukupno > predmet.predmet.vrlo_dobar:
+            if ukupno >= predmet.predmet.vrlo_dobar:
                 grade += 1
-            if ukupno > predmet.predmet.odlican:
+            if ukupno >= predmet.predmet.odlican:
                 grade += 1
 
             predmeti_list.append({
@@ -261,13 +261,20 @@ class MyPredmetiView(TemplateView):
                 'grade': grade,
             })
         prosjek = 0.0
+        tezinski_prosjek = 0.0
+        ukupno_ects = 0
         if len(predmeti_list) > 0:
 
             for predmet in predmeti_list:
                 prosjek += predmet['grade']
+                tezinski_prosjek += predmet['grade'] * \
+                    predmet['predmet'].predmet.ects
+                ukupno_ects += predmet['predmet'].predmet.ects
+                print(predmet['predmet'].predmet.ects)
             prosjek = prosjek / len(predmeti_list)
-
-        return render(request, self.template_name, {'predmeti': predmeti_list, 'prosjek': prosjek})
+            tezinski_prosjek = tezinski_prosjek / ukupno_ects
+        print(tezinski_prosjek)
+        return render(request, self.template_name, {'predmeti': predmeti_list, 'prosjek': prosjek, 'tezinski_prosjek': tezinski_prosjek, })
 
 
 class UpdatePointsView(TemplateView):
@@ -330,6 +337,7 @@ class AddPredmetView(TemplateView):
                 predmet.dobar = predmet_data['ocjenjivanje']['dobar']
                 predmet.vrlo_dobar = predmet_data['ocjenjivanje']['vrlo_dobar']
                 predmet.odlican = predmet_data['ocjenjivanje']['odlican']
+                predmet.ects = predmet_data['ects']
                 predmet.save()
 
                 for comp in predmet_data['komponente']:

@@ -13,6 +13,7 @@ class Predmet(models.Model):
     vrlo_dobar = models.IntegerField(default=75)
     odlican = models.IntegerField(default=90)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    ects = models.IntegerField(default=5)
 
     class Meta:
         verbose_name_plural = "Predmeti"

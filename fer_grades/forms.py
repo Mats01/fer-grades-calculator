@@ -73,7 +73,7 @@ class PredmetForm(forms.ModelForm):
 class EditPredmetForm(forms.ModelForm):
     class Meta:
         model = Predmet
-        fields = ['dovoljan', 'dobar', 'vrlo_dobar', 'odlican', ]
+        fields = ['ects', 'dovoljan', 'dobar', 'vrlo_dobar', 'odlican', ]
 
 
 class EmailAndPassAuthForm(forms.Form):

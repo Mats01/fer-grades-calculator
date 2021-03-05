@@ -124,6 +124,10 @@ input[type=number] {
 
 }
 
+.prosjek_container {
+    text-align: center;
+}
+
 .overview_table {
     width: min(80vw, 800px);
     margin: 12px auto 50px auto;

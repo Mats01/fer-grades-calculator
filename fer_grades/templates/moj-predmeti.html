@@ -3,14 +3,18 @@
 {% block content %}
 
 <div class="overview_wrapper">
-    <div>
+    <div class="prosjek_container">
         <h3>Prosjek:
             <span>{{prosjek}}</span>
+        </h3>
+        <h3>Tezinski prosjek:
+            <span>{{tezinski_prosjek}}</span>
         </h3>
     </div>
     <table class="overview_table">
         <tr>
             <th>Predmet</th>
+            <th>ECTS</th>
             <th>Bodovi</th>
             <th>Ocjena</th>
             </th>
@@ -18,6 +22,7 @@
         {%for predmet in predmeti %}
         <tr class="points_row">
             <td>{{predmet.predmet}}</td>
+            <td>{{predmet.predmet.predmet.ects}}</td>
             <td>{{predmet.points}}</td>
             <td>{{predmet.grade}}</td>
         </tr>
@@ -80,6 +85,7 @@
                 {% endfor %}
             </div>
             <div class="predmet_ocjene">
+                <pre>ECTS:   <strong>{{stavka.predmet.predmet.ects}}</strong></pre>
                 <pre>Dovoljan(2):   <strong>{{stavka.predmet.predmet.dovoljan}}</strong></pre>
                 <pre>Dobar(3):      <strong>{{stavka.predmet.predmet.dobar}}</strong></pre>
                 <pre>Vrlo Dobar(4): <strong>{{stavka.predmet.predmet.vrlo_dobar}}</strong></pre>

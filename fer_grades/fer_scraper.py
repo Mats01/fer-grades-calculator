@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 
 import re
 
+from requests.api import get
+
 
 def get_predmet_data(url):
 
@@ -42,5 +44,14 @@ def get_predmet_data(url):
                     'prag': comp[1].split(" ")[0],
                     'bodovi': comp[2].split(" ")[0],
                 })
+
+    divs = soup.find_all('div', attrs={'class': 'col-md-12'})
+    result['ects'] = 0
+
+    for div in divs:
+
+        if "ECTS" in str(div):
+            div = ' '.join(div.find('strong').text)
+            result['ects'] = div
 
     return result
